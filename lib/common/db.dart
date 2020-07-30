@@ -30,7 +30,7 @@ class Db {
   }
 
   FutureOr<void> _createDatabase(Database database, int version) async {
-    database.execute(
+    await database.execute(
       "CREATE TABLE tasks(id INTEGER PRIMARY KEY, name TEXT, description TEXT, created INTEGER, due INTEGER, status INTEGER)"
     );
   }
