@@ -13,26 +13,31 @@ class MyHomePage extends StatelessWidget {
       model: TaskList(),
       child: Scaffold(
         appBar: AppBar(title: Text(this.title)),
-        body: Column(children: <Widget>[
-          ScopedModelDescendant<TaskList> (
-            builder: (context, child, model) {
-              return new Text('${model.counter}');
-            },),
-          Text("body"),
-        ]),
+        body: ScopedModelDescendant<TaskList> (
+          builder: this._buildTaskList
+        ),
         floatingActionButton: 
           ScopedModelDescendant<TaskList>(
             builder: (ctx, child, model) {
               return FloatingActionButton(
-                onPressed: () => model.increment(),
+                // onPressed: () async => await model.query("Search query"),
+                onPressed: () async => await model.add('Task 1', 'The thing'),
                 tooltip: 'Increment', 
                 child: Icon(Icons.add)
               );
             },
           )
-        
-        
       ),
+    );
+  }
+
+  Widget _buildTaskList(context, child, TaskList model) {
+    return ListView (
+      children: model.tasks.map((task) => 
+        ListTile(
+          title: Text(task.name),
+        )
+      ).toList()
     );
   }
 }

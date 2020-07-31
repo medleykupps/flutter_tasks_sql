@@ -20,6 +20,20 @@ class Task extends Model {
     this._description = record["description"];
   }
 
+  Map<String, dynamic> toMap() {
+    final attr = new Map<String, dynamic>();
+    attr["id"] = this._id;
+    attr["name"] = this._name;
+    attr["description"] = this._description;
+    attr["created"] = this._created == null ? 0 : (this._created.millisecondsSinceEpoch / 1000).floor();
+    attr["due"] = this._due == null ? 0 : (this._due.millisecondsSinceEpoch / 1000).floor();
+    attr["status"] = this._status.index;
+    return attr;
+  }
+
+  void setId(int id) => this._id = id;
+  String get name => _name;
+
 }
 
 enum TaskStatus {
