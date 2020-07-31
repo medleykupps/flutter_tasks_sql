@@ -7,6 +7,12 @@ import 'task-model.dart';
 class TaskList extends Model {
 
   final _tasks = new List<Task>();
+  var _counter = 1;
+  int get counter => _counter;
+  void increment() {
+    this._counter++;
+    notifyListeners();
+  }
 
   void query(String nameFilter) async {
 
@@ -24,6 +30,6 @@ class TaskList extends Model {
     }
 
     notifyListeners();
-    
+
   }
 }
