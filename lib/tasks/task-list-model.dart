@@ -1,12 +1,21 @@
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:tasks_sql/common/db.dart';
+import 'package:tasks_sql/tasks/tasks-repository.dart';
 
 import 'task-model.dart';
 
 class TaskList extends Model {
 
   final tasks = new List<Task>();
+  TasksRepository _repository;
+
+  TaskList() {
+    this._repository = new TasksRepository();
+  }
+
+  TaskList.withDependencies(this._repository);
+
   var _counter = 1;
   int get counter => _counter;
   void increment() {
@@ -16,18 +25,17 @@ class TaskList extends Model {
 
   Future<Task> add(String name, String description) async {
 
-    final db = await Db().database;
+    final id = await _repository.getNextId();
 
-    final id = await _getNextId();
-    final task = Task.createNew(name, description: description);
-    task.setId(id);
-    final attributes = task.toMap();
-
-    final result = await db.insert("tasks", attributes);
-    print('Inserted $name $result');
-
-    tasks.add(task);
-    notifyListeners();
+    final task = Task.createNew(name, id: id, description: description);
+    
+    final result = await _repository.insert(task);
+    if (result) {
+      tasks.add(task);
+      notifyListeners();
+    } else {
+      // Handle error
+    }
 
     return task;
   }
@@ -54,12 +62,4 @@ class TaskList extends Model {
 
   }
 
-  Future<int> _getNextId() async {
-    final results = await (await Db().database).rawQuery('SELECT MAX(id) AS id FROM "tasks"');
-    if (results.length == 0) {
-      return 1;
-    }
-    final id = results.first["id"];
-    return id + 1;
-  }
 }

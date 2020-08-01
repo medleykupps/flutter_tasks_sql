@@ -11,8 +11,8 @@ class Task extends Model {
 
   Task(this._id, this._name, this._description, this._created, this._due, this._status);
 
-  Task.createNew(String name, {String description})
-    : this(-1, name, description, DateTime.now(), null, TaskStatus.not_started);
+  Task.createNew(String name, {int id = 1, String description})
+    : this(id, name, description, DateTime.now(), null, TaskStatus.not_started);
 
   Task.fromMap(Map<String, dynamic> record) {
     this._id = record["id"];
@@ -32,6 +32,8 @@ class Task extends Model {
   }
 
   void setId(int id) => this._id = id;
+
+  int get id => _id;
   String get name => _name;
 
 }
